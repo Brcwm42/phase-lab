@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHASE LAB 相位實驗室 | Experimental Design & Spatial Systems</title>
+  
+  <!-- Google Fonts: Space Mono (Monospace), Syne (Avant-Garde Display), Inter (Clean Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            void: '#090a0d',
+            surface: '#111318',
+            surfaceBorder: '#232733',
+            mutedText: '#878c99',
+            accentLime: '#d4ff32',
+            silver: '#d8dbe2'
+          },
+          fontFamily: {
+            syne: ['Syne', 'sans-serif'],
+            mono: ['"Space Mono"', 'monospace'],
+            sans: ['Inter', '"Noto Sans TC"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* Custom Lo-Fi & Contemporary Brutalist Styling */
+    ::selection {
+      background: #d4ff32;
+      color: #090a0d;
+    }
+    
+    /* Subtle Grid Background Overlay */
+    .bg-grid-pattern {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+
+    /* Architectural Corner Crosshairs */
+    .corner-bracket {
+      position: relative;
+    }
+    .corner-bracket::before, .corner-bracket::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    .corner-bracket::before {
+      top: -1px;
+      left: -1px;
+      border-top: 2px solid rgba(255, 255, 255, 0.4);
+      border-left: 2px solid rgba(255, 255, 255, 0.4);
+    }
+    .corner-bracket::after {
+      bottom: -1px;
+      right: -1px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+      border-right: 2px solid rgba(255, 255, 255, 0.4);
+    }
+    .corner-bracket:hover::before, .corner-bracket:hover::after {
+      border-color: #d4ff32;
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090a0d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #272a36;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #404558;
+    }
+  </style>
+</head>
+
+<body class="bg-void text-silver font-sans antialiased selection:bg-accentLime selection:text-void bg-grid-pattern min-h-screen relative overflow-x-hidden">
+
+  <!-- ========================================================
+       TOP NAVIGATION & STUDIO STATUS BAR
+  ======================================================== -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-void/85 backdrop-blur-md border-b border-surfaceBorder transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo & Index Code -->
+      <a href="#hero" class="group flex items-center space-x-3 text-white">
+        <div class="w-8 h-8 border border-white/30 flex items-center justify-center font-mono text-xs tracking-tighter group-hover:border-accentLime group-hover:text-accentLime transition-colors">
+          PH
+        </div>
+        <div class="flex flex-col">
+          <span class="font-syne font-bold tracking-wider text-base sm:text-lg leading-tight group-hover:text-white transition-colors">PHASE LAB</span>
+          <span class="font-mono text-[10px] text-mutedText tracking-widest uppercase">相位實驗室 // 0.94v</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex items-center space-x-8 font-mono text-xs tracking-widest text-mutedText">
+        <a href="#services" class="hover:text-accentLime transition-colors">01. SERVICES</a>
+        <a href="#works" class="hover:text-accentLime transition-colors">02. WORKS</a>
+        <a href="#case-study" class="hover:text-accentLime transition-colors">03. CASE STUDY</a>
+        <a href="#team" class="hover:text-accentLime transition-colors">04. TEAM</a>
+        <a href="#contact" class="hover:text-accentLime transition-colors">05. CONTACT</a>
+      </nav>
+
+      <!-- Live Commission Status Pill -->
+      <div class="flex items-center space-x-3">
+        <div class="hidden sm:flex items-center space-x-2 border border-surfaceBorder bg-surface px-3 py-1.5 rounded-full font-mono text-[11px]">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accentLime opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-accentLime"></span>
+          </span>
+          <span class="text-white/90">OPEN FOR COMMISSIONS</span>
+        </div>
+
+        <a href="#contact" class="px-4 py-2 bg-white text-void font-mono font-bold text-xs uppercase tracking-wider hover:bg-accentLime transition-colors rounded-none border border-white">
+          INQUIRE
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="relative pt-20">
+
+    <!-- ========================================================
+         SECTION 1: HERO
+    ======================================================== -->
+    <section id="hero" class="min-h-[calc(100vh-5rem)] flex flex-col justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      
+      <!-- Top Meta Coordinates -->
+      <div class="hero-stagger flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-mutedText border-b border-surfaceBorder pb-6">
+        <div class="flex items-center space-x-2">
+          <span class="text-accentLime">✢</span>
+          <span>LOCATION: TAIPEI / BERLIN [25.0330° N, 121.5654° E]</span>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span>CURATION & BRAND ARCHITECTURE</span>
+          <span class="hidden sm:inline text-surfaceBorder">|</span>
+          <span id="live-time" class="text-white font-mono">UTC+8 --:--:--</span>
+        </div>
+      </div>
+
+      <!-- Main Display Typography -->
+      <div class="my-auto py-12 lg:py-16">
+        <div class="hero-stagger mb-4 inline-flex items-center space-x-2 bg-white/5 border border-white/10 px-3 py-1 rounded-sm font-mono text-xs text-accentLime">
+          <span>// DISRUPTIVE VISUAL LABORATORY</span>
+        </div>
+
+        <h1 class="hero-stagger font-syne font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white leading-none uppercase mb-6">
+          PHASE LAB<br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-silver to-mutedText">相位實驗室</span>
+        </h1>
+
+        <p class="hero-stagger max-w-2xl text-base sm:text-xl text-mutedText leading-relaxed font-light">
+          專注於前衛文化標籤、藝術策展與新創青年的跨維度設計實踐。我們融會品牌識別系統、3D 光影空間與實驗排版，在理性架構與感性未知之間，解構既有視覺常規。
+        </p>
+
+        <!-- CTA Row -->
+        <div class="hero-stagger mt-8 sm:mt-10 flex flex-wrap items-center gap-4">
+          <a href="#works" class="px-6 py-3.5 bg-accentLime text-void font-mono font-bold text-xs uppercase tracking-widest hover:bg-white transition-all shadow-lg hover:shadow-accentLime/20">
+            EXPLORE ARCHIVE →
+          </a>
+          <a href="#case-study" class="px-6 py-3.5 border border-surfaceBorder bg-surface text-white font-mono text-xs uppercase tracking-widest hover:border-white transition-all">
+            READ CASE STUDY [RE:SONANCE]
+          </a>
+        </div>
+      </div>
+
+      <!-- Bottom Status & Scroll Indicator -->
+      <div class="hero-stagger flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-surfaceBorder pt-6 gap-4 font-mono text-xs text-mutedText">
+        <div class="flex items-center space-x-4">
+          <span class="text-white font-bold">STATUS:</span>
+          <span class="text-zinc-400">ACCEPTING COMMISSIONS Q1/Q2 2026</span>
+        </div>
+        
+        <a href="#services" class="group flex items-center space-x-3 text-mutedText hover:text-accentLime transition-colors">
+          <span>SCROLL TO DISCOVER</span>
+          <span class="inline-block transform group-hover:translate-y-1 transition-transform">↓</span>
+        </a>
+      </div>
+    </section>
+
+
+    <!-- ========================================================
+         SECTION 2: SERVICES
+    ======================================================== -->
+    <section id="services" class="py-24 border-t border-surfaceBorder bg-void/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-surfaceBorder pb-6">
+          <div>
+            <div class="font-mono text-xs text-accentLime uppercase tracking-widest mb-2">// 01. CAPABILITIES</div>
+            <h2 class="font-syne font-bold text-3xl sm:text-5xl text-white tracking-tight">SERVICES & SYSTEMS</h2>
+          </div>
+          <p class="font-mono text-xs text-mutedText mt-4 md:mt-0 max-w-xs">
+            跨領域融合策略，重構品牌在物理空間與數位螢幕間的連續感官體驗。
+          </p>
+        </div>
+
+        <!-- 3-Column Services Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          
+          <!-- Service Card 1 -->
+          <div class="service-card corner-bracket bg-surface border border-surfaceBorder p-8 flex flex-col justify-between hover:border-white/40 transition-colors">
+            <div>
+              <div class="font-mono text-xs text-accentLime mb-6">SYS.01 // IDENT</div>
+              <h3 class="font-syne font-bold text-xl sm:text-2xl text-white mb-3">Identity & System</h3>
+              <p class="text-sm text-mutedText leading-relaxed mb-6 font-light">
+                構建具備高度擴展性的模組化動態識別系統。突破靜態標誌束縛，讓品牌語言能在演算動畫、動態載體與多元介質上自由生長。
+              </p>
+            </div>
+            <div>
+              <div class="font-mono text-[11px] text-zinc-500 uppercase tracking-wider mb-2">DELIVERABLES:</div>
+              <div class="flex flex-wrap gap-1.5 font-mono text-[11px] text-zinc-300">
+                <span class="bg-void px-2 py-1 border border-surfaceBorder">Generative Logo</span>
+                <span class="bg-void px-2 py-1 border border-surfaceBorder">Dynamic Guidelines</span>
+                <span class="bg-void px-2 py-1 border border-surfaceBorder">Motion Token</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Card 2 -->
+          <div class="service-card corner-bracket bg-surface border border-surfaceBorder p-8 flex flex-col justify-between hover:border-white/40 transition-colors">
+            <div>
+              <div class="font-mono text-xs text-accentLime mb-6">SYS.02 // SPATIAL</div>
+              <h3 class="font-syne font-bold text-xl sm:text-2xl text-white mb-3">Spatial 3D & Light</h3>
+              <p class="text-sm text-mutedText leading-relaxed mb-6 font-light">
+                將光子與空間物理結構轉化為展覽敘事媒介。結合即時 3D 運算、光影投射拓撲與感測互動，為前衛策展提供沉浸式知覺場域。
+              </p>
+            </div>
+            <div>
+              <div class="font-mono text-[11px] text-zinc-500 uppercase tracking-wider mb-2">DELIVERABLES:</div>
+              <div class="flex flex-wrap gap-1.5 font-mono text-[11px] text-zinc-300">
+                <span class="bg-void px-2 py-1 border border-surfaceBorder">Spatial Scenography</span>
+                <span class="bg-void px-2 py-1 border border-surfaceBorder">3D Kinetic Lighting</span>
+                <span class="bg-void px-2 py-1 border border-surfaceBorder">Interactive Staging</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Card 3 -->
+          <div class="service-card corner-bracket bg-surface border border-surfaceBorder p-8 flex flex-col justify-between hover:border-white/40 transition-colors">
+            <div>
+              <div class="font-mono text-xs text-accentLime mb-6">SYS.03 // PRINT</div>
+              <h3 class="font-syne font-bold text-xl sm:text-2xl text-white mb-3">Editorial & Typography</h3>
+              <p class="text-sm text-mutedText leading-relaxed mb-6 font-light">
+                探索字形字體在邊緣文化印刷物中的張力。透過非常規網格、特殊油墨、紙質觸覺與排版實驗，賦予實體物件無可取代的文獻重量。
+              </p>
+            </div>
+            <div>
+              <div class="font-mono text-[11px] text-zinc-500 uppercase tracking-wider mb-2">DELIVERABLES:</div>
+              <div class="flex flex-wrap gap-1.5 font-mono text-[11px] text-zinc-300">
+                <span class="bg-void px-2 py-1 border border-surfaceBorder">Avant Publication</span>
+                <span class="bg-void px-2 py-1 border border-surfaceBorder">Bespoke Typeface</span>
+                <span class="bg-void px-2 py-1 border border-surfaceBorder">Material Curation</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================
+         SECTION 3: WORKS (FILTERABLE PORTFOLIO)
+    ======================================================== -->
+    <section id="works" class="py-24 border-t border-surfaceBorder">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header & Category Filters -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+          <div>
+            <div class="font-mono text-xs text-accentLime uppercase tracking-widest mb-2">// 02. SELECTED INDEX</div>
+            <h2 class="font-syne font-bold text-3xl sm:text-5xl text-white tracking-tight">FEATURED WORKS</h2>
+          </div>
+
+          <!-- Filter Tabs -->
+          <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+            <button class="filter-btn active-filter px-4 py-2 border border-accentLime bg-accentLime text-void font-bold transition-all" data-filter="all">
+              ALL [04]
+            </button>
+            <button class="filter-btn px-4 py-2 border border-surfaceBorder bg-surface text-mutedText hover:text-white hover:border-zinc-500 transition-all" data-filter="identity">
+              IDENTITY [02]
+            </button>
+            <button class="filter-btn px-4 py-2 border border-surfaceBorder bg-surface text-mutedText hover:text-white hover:border-zinc-500 transition-all" data-filter="editorial">
+              EDITORIAL [01]
+            </button>
+            <button class="filter-btn px-4 py-2 border border-surfaceBorder bg-surface text-mutedText hover:text-white hover:border-zinc-500 transition-all" data-filter="spatial">
+              SPATIAL [01]
+            </button>
+          </div>
+        </div>
+
+        <!-- Works Grid (4 Projects) -->
+        <div id="works-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+          <!-- Project 01: RE:SONANCE -->
+          <article class="work-card group relative bg-surface border border-surfaceBorder overflow-hidden corner-bracket" data-category="identity">
+            <!-- Simulated Avant-Garde Visual (SVG Graphics Canvas) -->
+            <div class="relative h-72 sm:h-80 w-full bg-zinc-950 overflow-hidden flex items-center justify-center p-6 border-b border-surfaceBorder">
+              <div class="card-visual-inner w-full h-full flex items-center justify-center relative transition-transform duration-700 ease-out">
+                <!-- Abstract Spectrogram Graphics -->
+                <svg viewBox="0 0 400 240" class="w-full h-full text-zinc-600 opacity-80 group-hover:text-accentLime transition-colors duration-500" fill="none" stroke="currentColor">
+                  <path d="M10 120 Q 50 20, 100 120 T 200 120 T 300 120 T 390 120" stroke-width="1.5" stroke-dasharray="4 4" />
+                  <path d="M10 120 Q 70 210, 150 120 T 250 120 T 350 40 T 390 120" stroke-width="2" />
+                  <circle cx="200" cy="120" r="60" stroke-width="1" stroke-dasharray="2 3" />
+                  <circle cx="200" cy="120" r="15" fill="currentColor" fill-opacity="0.2" />
+                  <line x1="200" y1="20" x2="200" y2="220" stroke-width="0.75" stroke-dasharray="5 5" />
+                  <line x1="20" y1="120" x2="380" y2="120" stroke-width="0.75" stroke-dasharray="5 5" />
+                </svg>
+                <!-- Monospace Overlay Watermark -->
+                <div class="absolute bottom-3 left-4 font-mono text-[10px] text-zinc-500">
+                  FREQ_SPECTRUM // 432Hz - 8k
+                </div>
+              </div>
+
+              <!-- View Hint Micro-interaction Overlay -->
+              <div class="card-overlay absolute inset-0 bg-void/70 backdrop-blur-sm opacity-0 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
+                <span class="font-mono text-xs uppercase px-4 py-2 border border-accentLime bg-accentLime/10 text-accentLime tracking-widest">
+                  EXPLORE CASE [ 01 ] ↗
+                </span>
+              </div>
+            </div>
+
+            <!-- Project Details -->
+            <div class="p-6">
+              <div class="flex items-center justify-between font-mono text-xs text-mutedText mb-2">
+                <span class="text-accentLime">01 // IDENTITY & SPATIAL</span>
+                <span>YEAR: 2025</span>
+              </div>
+              <h3 class="font-syne font-bold text-2xl text-white group-hover:text-accentLime transition-colors mb-2">
+                《RE:SONANCE 聲響頻譜藝術節》
+              </h3>
+              <p class="text-sm text-mutedText font-light">
+                為亞洲指標性實驗聲響藝術節量身打造之生成式動態識別與三維空間指引系統。
+              </p>
+            </div>
+          </article>
+
+          <!-- Project 02: DEVIATION -->
+          <article class="work-card group relative bg-surface border border-surfaceBorder overflow-hidden corner-bracket" data-category="editorial">
+            <div class="relative h-72 sm:h-80 w-full bg-zinc-950 overflow-hidden flex items-center justify-center p-6 border-b border-surfaceBorder">
+              <div class="card-visual-inner w-full h-full flex items-center justify-center relative transition-transform duration-700 ease-out">
+                <!-- Typographic Layout Art -->
+                <svg viewBox="0 0 400 240" class="w-full h-full text-zinc-500 group-hover:text-white transition-colors duration-500" fill="none" stroke="currentColor">
+                  <rect x="60" y="30" width="280" height="180" stroke-width="1" stroke-dasharray="6 3" />
+                  <text x="75" y="75" fill="currentColor" font-family="Space Mono" font-size="28" font-weight="bold">DEVIATION</text>
+                  <text x="75" y="105" fill="currentColor" font-family="Space Mono" font-size="14">離相 / ISSUE 07</text>
+                  <line x1="75" y1="120" x2="320" y2="120" stroke-width="1.5" />
+                  <rect x="75" y="140" width="100" height="40" fill="currentColor" fill-opacity="0.1" />
+                  <rect x="190" y="140" width="130" height="40" stroke-width="0.75" />
+                </svg>
+                <div class="absolute bottom-3 left-4 font-mono text-[10px] text-zinc-500">
+                  PRINT SPEC // 170GSM Munken Lynx
+                </div>
+              </div>
+
+              <div class="card-overlay absolute inset-0 bg-void/70 backdrop-blur-sm opacity-0 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
+                <span class="font-mono text-xs uppercase px-4 py-2 border border-accentLime bg-accentLime/10 text-accentLime tracking-widest">
+                  VIEW PUBLICATION ↗
+                </span>
+              </div>
+            </div>
+
+            <div class="p-6">
+              <div class="flex items-center justify-between font-mono text-xs text-mutedText mb-2">
+                <span class="text-accentLime">02 // EDITORIAL</span>
+                <span>YEAR: 2025</span>
+              </div>
+              <h3 class="font-syne font-bold text-2xl text-white group-hover:text-accentLime transition-colors mb-2">
+                《DEVIATION 離相》前衛文化刊物
+              </h3>
+              <p class="text-sm text-mutedText font-light">
+                解構傳統出版物格線的實驗刊物，運用字級對比與金屬感燙印探討數位異化現象。
+              </p>
+            </div>
+          </article>
+
+          <!-- Project 03: MONOLITH -->
+          <article class="work-card group relative bg-surface border border-surfaceBorder overflow-hidden corner-bracket" data-category="spatial">
+            <div class="relative h-72 sm:h-80 w-full bg-zinc-950 overflow-hidden flex items-center justify-center p-6 border-b border-surfaceBorder">
+              <div class="card-visual-inner w-full h-full flex items-center justify-center relative transition-transform duration-700 ease-out">
+                <!-- 3D Monolith Wireframe Artwork -->
+                <svg viewBox="0 0 400 240" class="w-full h-full text-zinc-600 group-hover:text-accentLime transition-colors duration-500" fill="none" stroke="currentColor">
+                  <!-- Monolith isometric cube -->
+                  <polygon points="200,40 280,85 200,130 120,85" stroke-width="1.5" />
+                  <polygon points="120,85 200,130 200,210 120,165" stroke-width="1.5" fill="currentColor" fill-opacity="0.05" />
+                  <polygon points="280,85 200,130 200,210 280,165" stroke-width="1.5" fill="currentColor" fill-opacity="0.15" />
+                  <line x1="200" y1="40" x2="200" y2="10" stroke-width="1" stroke-dasharray="2 2" />
+                  <circle cx="200" cy="10" r="3" fill="currentColor" />
+                  <!-- Coordinate rays -->
+                  <line x1="50" y1="210" x2="350" y2="210" stroke-width="0.5" stroke-dasharray="4 4" />
+                </svg>
+                <div class="absolute bottom-3 left-4 font-mono text-[10px] text-zinc-500">
+                  PHOTON RIG // 64ch DMX LUX
+                </div>
+              </div>
+
+              <div class="card-overlay absolute inset-0 bg-void/70 backdrop-blur-sm opacity-0 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
+                <span class="font-mono text-xs uppercase px-4 py-2 border border-accentLime bg-accentLime/10 text-accentLime tracking-widest">
+                  VIEW SPATIAL ARCHIVE ↗
+                </span>
+              </div>
+            </div>
+
+            <div class="p-6">
+              <div class="flex items-center justify-between font-mono text-xs text-mutedText mb-2">
+                <span class="text-accentLime">03 // SPATIAL 3D & LIGHT</span>
+                <span>YEAR: 2024</span>
+              </div>
+              <h3 class="font-syne font-bold text-2xl text-white group-hover:text-accentLime transition-colors mb-2">
+                《MONOLITH 單體》建築光影展覽空間
+              </h3>
+              <p class="text-sm text-mutedText font-light">
+                工業廢墟改建光影展覽。利用精確雷射陣列與實時霧氣雕塑，重現建築量體的純粹重力感。
+              </p>
+            </div>
+          </article>
+
+          <!-- Project 04: SPECTRUM 01 -->
+          <article class="work-card group relative bg-surface border border-surfaceBorder overflow-hidden corner-bracket" data-category="identity">
+            <div class="relative h-72 sm:h-80 w-full bg-zinc-950 overflow-hidden flex items-center justify-center p-6 border-b border-surfaceBorder">
+              <div class="card-visual-inner w-full h-full flex items-center justify-center relative transition-transform duration-700 ease-out">
+                <!-- Packaging Grid Art -->
+                <svg viewBox="0 0 400 240" class="w-full h-full text-zinc-500 group-hover:text-white transition-colors duration-500" fill="none" stroke="currentColor">
+                  <rect x="130" y="40" width="140" height="160" stroke-width="1.5" />
+                  <line x1="130" y1="90" x2="270" y2="90" stroke-width="1" />
+                  <circle cx="155" cy="65" r="8" fill="currentColor" />
+                  <text x="175" y="70" fill="currentColor" font-family="Space Mono" font-size="10">SP-01/COFFEE</text>
+                  <line x1="145" y1="120" x2="255" y2="120" stroke-width="0.75" stroke-dasharray="3 3" />
+                  <line x1="145" y1="140" x2="255" y2="140" stroke-width="0.75" stroke-dasharray="3 3" />
+                  <line x1="145" y1="160" x2="210" y2="160" stroke-width="0.75" stroke-dasharray="3 3" />
+                </svg>
+                <div class="absolute bottom-3 left-4 font-mono text-[10px] text-zinc-500">
+                  PACKAGING // MODULAR SYSTEM
+                </div>
+              </div>
+
+              <div class="card-overlay absolute inset-0 bg-void/70 backdrop-blur-sm opacity-0 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
+                <span class="font-mono text-xs uppercase px-4 py-2 border border-accentLime bg-accentLime/10 text-accentLime tracking-widest">
+                  VIEW PACKAGING SYSTEM ↗
+                </span>
+              </div>
+            </div>
+
+            <div class="p-6">
+              <div class="flex items-center justify-between font-mono text-xs text-mutedText mb-2">
+                <span class="text-accentLime">04 // IDENTITY SYSTEM</span>
+                <span>YEAR: 2024</span>
+              </div>
+              <h3 class="font-syne font-bold text-2xl text-white group-hover:text-accentLime transition-colors mb-2">
+                《SPECTRUM 01》模組化機能咖啡包裝
+              </h3>
+              <p class="text-sm text-mutedText font-light">
+                針對當代極簡烘焙品牌設計的鋁箔複合包裝系統，以階梯式色譜辨識烘焙深度與產地代碼。
+              </p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================
+         SECTION 4: CASE STUDY (DEEP DIVE: RE:SONANCE)
+    ======================================================== -->
+    <section id="case-study" class="py-24 border-t border-surfaceBorder bg-surface/30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="mb-16 border-b border-surfaceBorder pb-6">
+          <div class="flex items-center space-x-2 font-mono text-xs text-accentLime uppercase tracking-widest mb-2">
+            <span>// 03. IN-DEPTH CASE STUDY</span>
+            <span>—</span>
+            <span>PRIMARY COMMISSION</span>
+          </div>
+          <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            <div>
+              <h2 class="font-syne font-bold text-3xl sm:text-5xl text-white tracking-tight">
+                《RE:SONANCE 聲響頻譜藝術節》
+              </h2>
+              <p class="font-mono text-xs text-mutedText mt-2">
+                跨領域聲響藝術・動態視覺識別・空間物理介面 完整執行脈絡解構
+              </p>
+            </div>
+            <div class="font-mono text-xs text-zinc-400 bg-surface border border-surfaceBorder px-4 py-2">
+              CLIENT: 聲響維度藝術基金會 / DURATION: 6 MONTHS
+            </div>
+          </div>
+        </div>
+
+        <!-- Sequential Step-by-Step Breakdown -->
+        <div class="space-y-8" id="case-study-steps">
+
+          <!-- Step 1: Background -->
+          <div class="case-step corner-bracket bg-surface border border-surfaceBorder p-8 lg:p-10 flex flex-col md:flex-row gap-8 items-start">
+            <div class="font-mono text-2xl font-bold text-accentLime flex-shrink-0">
+              01 //
+            </div>
+            <div class="flex-1">
+              <span class="font-mono text-xs uppercase tracking-widest text-zinc-500 mb-1 block">PHASE 01: CONTEXT</span>
+              <h3 class="font-syne font-bold text-2xl text-white mb-3">專案背景 (Project Background)</h3>
+              <p class="text-sm sm:text-base text-mutedText leading-relaxed font-light">
+                《RE:SONANCE》是一場落腳於百年前重工業發電廠遺址的國際實驗聲響藝術節。策展主軸旨在探討「後工業噪聲、人體感知頻率與歷史殘響」之共生關係。委託方期盼一套能打破主流展演慣常套路、體現純粹聲響物理質地的識別機制。
+              </p>
+            </div>
+            <div class="w-full md:w-64 font-mono text-xs bg-void p-4 border border-surfaceBorder text-zinc-400">
+              <div class="text-white font-bold mb-1">KEY CONSTRAINTS</div>
+              <ul class="list-disc list-inside space-y-1 text-[11px]">
+                <li>非典型工業空間導引</li>
+                <li>無形聲音可視化難題</li>
+                <li>三語系跨國展演需求</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Step 2: Challenge -->
+          <div class="case-step corner-bracket bg-surface border border-surfaceBorder p-8 lg:p-10 flex flex-col md:flex-row gap-8 items-start">
+            <div class="font-mono text-2xl font-bold text-accentLime flex-shrink-0">
+              02 //
+            </div>
+            <div class="flex-1">
+              <span class="font-mono text-xs uppercase tracking-widest text-zinc-500 mb-1 block">PHASE 02: FRICTION</span>
+              <h3 class="font-syne font-bold text-2xl text-white mb-3">核心挑戰 (Core Challenge)</h3>
+              <p class="text-sm sm:text-base text-mutedText leading-relaxed font-light">
+                聲音本質是無形的時空衰減波。如何將抽象的聲波頻譜轉化為具備「嚴謹數學結構」且能在手機螢幕、實體票券、重型鋼構空間指標中維持一致張力的視覺語言？同時，現場需避免繁複眩目的光害，維持沉浸聆聽本質。
+              </p>
+            </div>
+            <div class="w-full md:w-64 font-mono text-xs bg-void p-4 border border-surfaceBorder text-zinc-400">
+              <div class="text-white font-bold mb-1">CORE FRICTION</div>
+              <p class="text-[11px] leading-relaxed">
+                如何避免傳統音樂節浮誇視覺干擾，回歸頻率與空間的本質共鳴。
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3: Strategy -->
+          <div class="case-step corner-bracket bg-surface border border-surfaceBorder p-8 lg:p-10 flex flex-col md:flex-row gap-8 items-start">
+            <div class="font-mono text-2xl font-bold text-accentLime flex-shrink-0">
+              03 //
+            </div>
+            <div class="flex-1">
+              <span class="font-mono text-xs uppercase tracking-widest text-zinc-500 mb-1 block">PHASE 03: SYNTHESIS</span>
+              <h3 class="font-syne font-bold text-2xl text-white mb-3">設計策略 (Design Strategy)</h3>
+              <p class="text-sm sm:text-base text-mutedText leading-relaxed font-light mb-4">
+                我們以「音波共振拓撲 (Resonant Topology)」為核心演算法，將參展藝術家的音檔 FFT 數據直接轉譯為動態幾何座標。建立「生成式點陣系統」，所有標誌與輔助幾何元素皆能根據環境現場分貝產生即時波動。
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs text-zinc-300">
+                <div class="border border-surfaceBorder p-3 bg-void/60">
+                  <span class="text-accentLime block font-bold mb-1">METHOD A: DATA MAPPING</span>
+                  聲音實時音頻頻譜 FFT ➔ 幾何網格碎形
+                </div>
+                <div class="border border-surfaceBorder p-3 bg-void/60">
+                  <span class="text-accentLime block font-bold mb-1">METHOD B: LOW-LUMEN WAYFINDING</span>
+                  冷調反光油墨與低照度紅外線導光標識
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Outcome -->
+          <div class="case-step corner-bracket bg-surface border border-accentLime/40 p-8 lg:p-10 flex flex-col md:flex-row gap-8 items-start bg-gradient-to-r from-surface to-surface/80">
+            <div class="font-mono text-2xl font-bold text-accentLime flex-shrink-0">
+              04 //
+            </div>
+            <div class="flex-1">
+              <span class="font-mono text-xs uppercase tracking-widest text-accentLime mb-1 block">PHASE 04: DELIVERED</span>
+              <h3 class="font-syne font-bold text-2xl text-white mb-3">最終成果 (Final Outcome)</h3>
+              <p class="text-sm sm:text-base text-mutedText leading-relaxed font-light mb-6">
+                展期四天吸引逾 18,000 名跨國訪客，生成式識別系統被海外設計媒體《Frame》與《It’s Nice That》專題報導。現場動態導引降低迷航率 84%，並榮獲金點設計獎年度最佳設計入圍。
+              </p>
+              
+              <!-- Metrics Counter / Badges -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 font-mono text-center">
+                <div class="border border-surfaceBorder bg-void p-4">
+                  <div class="text-2xl font-bold text-white font-syne">18K+</div>
+                  <div class="text-[11px] text-zinc-500 uppercase mt-1">VISITORS ATTENDED</div>
+                </div>
+                <div class="border border-surfaceBorder bg-void p-4">
+                  <div class="text-2xl font-bold text-accentLime font-syne">12</div>
+                  <div class="text-[11px] text-zinc-500 uppercase mt-1">SPATIAL INSTALLATIONS</div>
+                </div>
+                <div class="border border-surfaceBorder bg-void p-4 col-span-2 sm:col-span-1">
+                  <div class="text-2xl font-bold text-white font-syne">100%</div>
+                  <div class="text-[11px] text-zinc-500 uppercase mt-1">ALGORITHMIC IDENTITY</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================================
+         SECTION 5: TEAM
+    ======================================================== -->
+    <section id="team" class="py-24 border-t border-surfaceBorder">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-surfaceBorder pb-6">
+          <div>
+            <div class="font-mono text-xs text-accentLime uppercase tracking-widest mb-2">// 04. CREATIVE FORCES</div>
+            <h2 class="font-syne font-bold text-3xl sm:text-5xl text-white tracking-tight">THE COLLECTIVE</h2>
+          </div>
+          <p class="font-mono text-xs text-mutedText mt-4 md:mt-0 max-w-xs">
+            由設計師、演算工程師與聲音藝術家組成的跨界實驗核心。
+          </p>
+        </div>
+
+        <!-- Team Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+          <!-- Member 1 -->
+          <div class="team-card corner-bracket bg-surface border border-surfaceBorder p-8 flex flex-col justify-between">
+            <div>
+              <div class="w-16 h-16 border border-zinc-700 bg-void mb-6 flex items-center justify-center font-mono text-xs text-accentLime">
+                [KS_01]
+              </div>
+              <div class="font-mono text-xs text-accentLime mb-1">FOUNDER & LEAD DESIGNER</div>
+              <h3 class="font-syne font-bold text-2xl text-white mb-2">KAI SHEN / 沈楷</h3>
+              <p class="text-sm text-mutedText font-light leading-relaxed mb-6">
+                曾任職於柏林與東京實驗設計事務所。深研品牌架構、幾何符號學與前衛文化出版，專注於探求視覺秩序在混亂邊界中的平衡。
+              </p>
+            </div>
+            <div class="font-mono text-[11px] text-zinc-500 border-t border-surfaceBorder pt-4">
+              FOCUS: BRAND ARCHITECTURE / EXPERIMENTAL TYPO
+            </div>
+          </div>
+
+          <!-- Member 2 -->
+          <div class="team-card corner-bracket bg-surface border border-surfaceBorder p-8 flex flex-col justify-between">
+            <div>
+              <div class="w-16 h-16 border border-zinc-700 bg-void mb-6 flex items-center justify-center font-mono text-xs text-white">
+                [VL_02]
+              </div>
+              <div class="font-mono text-xs text-accentLime mb-1">CREATIVE TECHNOLOGIST</div>
+              <h3 class="font-syne font-bold text-2xl text-white mb-2">VERA LIN / 林宛</h3>
+              <p class="text-sm text-mutedText font-light leading-relaxed mb-6">
+                背景涵蓋計算機圖學與建築空間運算。負責將感測器數據、光學演算法與實體硬體串接，構築具有靈性的動態空間場域。
+              </p>
+            </div>
+            <div class="font-mono text-[11px] text-zinc-500 border-t border-surfaceBorder pt-4">
+              FOCUS: GENERATIVE GLSL / PHYSICAL COMPUTING
+            </div>
+          </div>
+
+          <!-- Member 3 -->
+          <div class="team-card corner-bracket bg-surface border border-surfaceBorder p-8 flex flex-col justify-between">
+            <div>
+              <div class="w-16 h-16 border border-zinc-700 bg-void mb-6 flex items-center justify-center font-mono text-xs text-zinc-400">
+                [NC_03]
+              </div>
+              <div class="font-mono text-xs text-accentLime mb-1">MOTION & SONIC DIRECTOR</div>
+              <h3 class="font-syne font-bold text-2xl text-white mb-2">NOAH CHEN / 陳諾</h3>
+              <p class="text-sm text-mutedText font-light leading-relaxed mb-6">
+                聲音藝術家與 3D 動態影像創作者。專精於音畫聯覺（Synesthesia）探索，將低頻振動與時間序列轉譯為撼動感官的視覺流體。
+              </p>
+            </div>
+            <div class="font-mono text-[11px] text-zinc-500 border-t border-surfaceBorder pt-4">
+              FOCUS: AUDIOVISUAL TRANSLATION / KINETIC 3D
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Studio Manifesto Strip -->
+        <div class="mt-12 p-8 border border-surfaceBorder bg-void flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="font-mono text-xs text-zinc-400">
+            <span class="text-accentLime font-bold">// MANIFESTO:</span>
+            「我們不裝飾現存的世界，我們在未知中發掘新的視覺維度。」
+          </div>
+          <div class="font-mono text-xs text-zinc-600">
+            PHASE LAB ARCHIVE © 2026 ALL INTELLECTUAL EXPLORATION RESERVED.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ========================================================
+         SECTION 6: CONTACT (COMMISSION INQUIRY)
+    ======================================================== -->
+    <section id="contact" class="py-24 border-t border-surfaceBorder bg-void">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          
+          <!-- Left Column: Context & Coordinates -->
+          <div class="lg:col-span-5 flex flex-col justify-between">
+            <div>
+              <div class="font-mono text-xs text-accentLime uppercase tracking-widest mb-2">// 05. INITIATE DIALOGUE</div>
+              <h2 class="font-syne font-bold text-3xl sm:text-5xl text-white tracking-tight mb-6">
+                START A COMMISSION
+              </h2>
+              <p class="text-mutedText font-light text-sm sm:text-base leading-relaxed mb-8">
+                我們每季僅承接有限數量的深度專案，以確保每個委託皆能獲得最高純度的實驗探索與執行精度。請填寫您的專案輪廓，我們將於 48 小時內回覆。
+              </p>
+
+              <!-- Studio Direct Inquiries -->
+              <div class="space-y-4 font-mono text-xs border-t border-surfaceBorder pt-6">
+                <div>
+                  <span class="text-zinc-500 block">DIRECT DISPATCH:</span>
+                  <a href="mailto:hello@phaselab.studio" class="text-white hover:text-accentLime transition-colors">hello@phaselab.studio</a>
+                </div>
+                <div>
+                  <span class="text-zinc-500 block">ENCRYPTED COMS:</span>
+                  <span class="text-white">PGP KEY: 0x94B7F10E // PHASE-SEC</span>
+                </div>
+                <div>
+                  <span class="text-zinc-500 block">STUDIO LOCATIONS:</span>
+                  <span class="text-white">TAIPEI / BERLIN-MITTE</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Current Acceptance Status Box -->
+            <div class="mt-8 border border-surfaceBorder bg-surface p-4 font-mono text-xs">
+              <div class="flex items-center space-x-2 text-accentLime mb-1">
+                <span class="w-2 h-2 bg-accentLime rounded-full"></span>
+                <span class="font-bold">ACCEPTANCE WINDOW: ACTIVE</span>
+              </div>
+              <p class="text-zinc-400 text-[11px]">
+                Currently booking for Q1 / Q2 2026. Academic & avant-garde cultural projects qualify for experimental rate subsidies.
+              </p>
+            </div>
+          </div>
+
+          <!-- Right Column: Interactive Form -->
+          <div class="lg:col-span-7">
+            <div class="corner-bracket bg-surface border border-surfaceBorder p-8 sm:p-10 relative">
+              
+              <!-- Form Success State Box (Hidden by default, shown on successful submission) -->
+              <div id="form-success-banner" class="hidden absolute inset-0 bg-void/95 backdrop-blur-md z-20 flex flex-col items-center justify-center p-8 text-center border border-accentLime">
+                <div class="w-12 h-12 rounded-full border border-accentLime flex items-center justify-center text-accentLime text-xl mb-4 font-mono">
+                  ✓
+                </div>
+                <div class="font-mono text-xs text-accentLime tracking-widest uppercase mb-1">TRANSMISSION RECEIVED</div>
+                <h3 class="font-syne font-bold text-2xl text-white mb-2">專案委託意向已傳送</h3>
+                <p class="text-mutedText text-xs font-mono max-w-sm mb-6">
+                  相位實驗室團隊已收到您的專案需求資料。我們的創意總監將在 48 小時內進行評估並與您建立聯繫。
+                </p>
+                <button id="reset-form-btn" class="px-6 py-2.5 border border-surfaceBorder bg-surface text-white font-mono text-xs uppercase tracking-wider hover:border-white transition-colors">
+                  SEND ANOTHER DISPATCH
+                </button>
+              </div>
+
+              <!-- Main Inquiry Form -->
+              <form id="contact-form" class="space-y-6">
+                
+                <!-- Field: Name -->
+                <div>
+                  <label for="client-name" class="block font-mono text-xs uppercase tracking-wider text-zinc-400 mb-2">
+                    01. NAME / ENTITY *
+                  </label>
+                  <input 
+                    type="text" 
+                    id="client-name" 
+                    name="name" 
+                    required 
+                    placeholder="e.g. 柏林當代藝術節策劃組 / KAI SHEN"
+                    class="w-full bg-void border border-surfaceBorder px-4 py-3 font-sans text-sm text-white focus:outline-none focus:border-accentLime transition-colors rounded-none placeholder:text-zinc-600"
+                  >
+                </div>
+
+                <!-- Field: Email -->
+                <div>
+                  <label for="client-email" class="block font-mono text-xs uppercase tracking-wider text-zinc-400 mb-2">
+                    02. DIRECT EMAIL *
+                  </label>
+                  <input 
+                    type="email" 
+                    id="client-email" 
+                    name="email" 
+                    required 
+                    placeholder="curator@avant-garde.org"
+                    class="w-full bg-void border border-surfaceBorder px-4 py-3 font-sans text-sm text-white focus:outline-none focus:border-accentLime transition-colors rounded-none placeholder:text-zinc-600"
+                  >
+                </div>
+
+                <!-- Field: Service Type -->
+                <div>
+                  <label class="block font-mono text-xs uppercase tracking-wider text-zinc-400 mb-2">
+                    03. SYSTEM SCOPE (SELECT PRIMARY NEED) *
+                  </label>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <label class="flex items-center space-x-2 border border-surfaceBorder bg-void p-3 cursor-pointer hover:border-zinc-500 text-xs font-mono">
+                      <input type="radio" name="service" value="identity" checked class="accent-accentLime">
+                      <span class="text-zinc-300">Identity System</span>
+                    </label>
+                    <label class="flex items-center space-x-2 border border-surfaceBorder bg-void p-3 cursor-pointer hover:border-zinc-500 text-xs font-mono">
+                      <input type="radio" name="service" value="spatial" class="accent-accentLime">
+                      <span class="text-zinc-300">Spatial & 3D</span>
+                    </label>
+                    <label class="flex items-center space-x-2 border border-surfaceBorder bg-void p-3 cursor-pointer hover:border-zinc-500 text-xs font-mono">
+                      <input type="radio" name="service" value="editorial" class="accent-accentLime">
+                      <span class="text-zinc-300">Editorial Typo</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Field: Message -->
+                <div>
+                  <label for="client-message" class="block font-mono text-xs uppercase tracking-wider text-zinc-400 mb-2">
+                    04. PROJECT BRIEF & TIMELINE *
+                  </label>
+                  <textarea 
+                    id="client-message" 
+                    name="message" 
+                    rows="4" 
+                    required 
+                    placeholder="請簡述您的專案概念、核心挑戰、預計發表時間與預算區間..."
+                    class="w-full bg-void border border-surfaceBorder px-4 py-3 font-sans text-sm text-white focus:outline-none focus:border-accentLime transition-colors rounded-none placeholder:text-zinc-600 resize-none"
+                  ></textarea>
+                </div>
+
+                <!-- Submit Button with GSAP Interaction Container -->
+                <div class="pt-2">
+                  <button 
+                    type="submit" 
+                    id="submit-btn" 
+                    class="relative w-full py-4 px-6 bg-white text-void font-mono font-bold text-xs uppercase tracking-widest border border-white hover:bg-accentLime hover:border-accentLime transition-all flex items-center justify-center space-x-3 group"
+                  >
+                    <span id="btn-text">INITIATE DISPATCH →</span>
+                    <span id="btn-icon" class="inline-block transform group-hover:translate-x-1 transition-transform">✢</span>
+                  </button>
+                  <p class="font-mono text-[10px] text-zinc-500 text-center mt-3">
+                    ALL SUBMISSIONS ARE PROTECTED UNDER STUDIO DISCLOSURE PROTOCOL.
+                  </p>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================
+       FOOTER
+  ======================================================== -->
+  <footer class="border-t border-surfaceBorder bg-void py-12 font-mono text-xs text-mutedText">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center space-x-3">
+        <span class="text-white font-syne font-bold tracking-wider">PHASE LAB</span>
+        <span>/ 相位實驗室</span>
+        <span class="text-zinc-600">|</span>
+        <span class="text-[11px]">ALL SYSTEMS OPERATIONAL</span>
+      </div>
+
+      <div class="flex items-center space-x-6 text-[11px]">
+        <a href="#hero" class="hover:text-accentLime transition-colors">TOP ↑</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="hover:text-accentLime transition-colors">GITHUB</a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="hover:text-accentLime transition-colors">INSTAGRAM</a>
+        <a href="https://are.na" target="_blank" rel="noopener noreferrer" class="hover:text-accentLime transition-colors">ARE.NA</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ========================================================
+       GSAP 3 & SCROLLTRIGGER INTERACTION SCRIPTS
+  ======================================================== -->
+  <script>
+    // 1. Live Time Counter (UTC+8 for Taipei Studio)
+    function updateLiveTime() {
+      const now = new Date();
+      const options = {
+        timeZone: 'Asia/Taipei',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      };
+      const timeStr = now.toLocaleTimeString('en-GB', options);
+      const timeEl = document.getElementById('live-time');
+      if (timeEl) {
+        timeEl.textContent = `TPE (UTC+8) ${timeStr}`;
+      }
+    }
+    setInterval(updateLiveTime, 1000);
+    updateLiveTime();
+
+    // 2. Initialize GSAP & ScrollTrigger Animations
+    window.addEventListener('DOMContentLoaded', () => {
+      // Register GSAP Plugins
+      gsap.registerPlugin(ScrollTrigger);
+
+      // ----------------------------------------------------
+      // A. HERO SECTION ENTRANCE (gsap.from + stagger)
+      // ----------------------------------------------------
+      const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      
+      heroTl.from('.hero-stagger', {
+        y: 40,
+        opacity: 0,
+        duration: 1.1,
+        stagger: 0.14,
+        delay: 0.2
+      });
+
+      // ----------------------------------------------------
+      // B. SERVICES CARDS SCROLLTRIGGER (start: "top 80%")
+      // ----------------------------------------------------
+      gsap.from('.service-card', {
+        scrollTrigger: {
+          trigger: '#services',
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        },
+        y: 50,
+        opacity: 0,
+        duration: 0.9,
+        stagger: 0.18,
+        ease: 'power3.out'
+      });
+
+      // ----------------------------------------------------
+      // C. WORKS CARDS HOVER & SCROLLTRIGGER
+      // ----------------------------------------------------
+      // Scroll entry for works
+      gsap.from('.work-card', {
+        scrollTrigger: {
+          trigger: '#works',
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        },
+        y: 60,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.2,
+        ease: 'power3.out'
+      });
+
+      // Hover Micro-interactions on Project Cards
+      const workCards = document.querySelectorAll('.work-card');
+      workCards.forEach(card => {
+        const visual = card.querySelector('.card-visual-inner');
+        const overlay = card.querySelector('.card-overlay');
+
+        card.addEventListener('mouseenter', () => {
+          gsap.to(visual, { scale: 1.05, duration: 0.5, ease: 'power2.out' });
+          gsap.to(overlay, { opacity: 1, duration: 0.35, ease: 'power2.out' });
+        });
+
+        card.addEventListener('mouseleave', () => {
+          gsap.to(visual, { scale: 1.0, duration: 0.5, ease: 'power2.out' });
+          gsap.to(overlay, { opacity: 0, duration: 0.35, ease: 'power2.out' });
+        });
+      });
+
+      // Works Category Filtering Logic
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Update active styles
+          filterBtns.forEach(b => {
+            b.classList.remove('bg-accentLime', 'text-void', 'border-accentLime', 'font-bold');
+            b.classList.add('bg-surface', 'text-mutedText', 'border-surfaceBorder');
+          });
+          btn.classList.add('bg-accentLime', 'text-void', 'border-accentLime', 'font-bold');
+          btn.classList.remove('bg-surface', 'text-mutedText', 'border-surfaceBorder');
+
+          const category = btn.getAttribute('data-filter');
+
+          workCards.forEach(card => {
+            const cardCat = card.getAttribute('data-category');
+            if (category === 'all' || cardCat === category) {
+              gsap.to(card, {
+                opacity: 1,
+                scale: 1,
+                duration: 0.4,
+                display: 'block',
+                ease: 'power2.out'
+              });
+            } else {
+              gsap.to(card, {
+                opacity: 0,
+                scale: 0.96,
+                duration: 0.3,
+                display: 'none',
+                ease: 'power2.in'
+              });
+            }
+          });
+          ScrollTrigger.refresh();
+        });
+      });
+
+      // ----------------------------------------------------
+      // D. CASE STUDY SEQUENTIAL TIMELINE STEP-BY-STEP
+      // ----------------------------------------------------
+      const caseSteps = document.querySelectorAll('.case-step');
+      caseSteps.forEach((step, index) => {
+        gsap.from(step, {
+          scrollTrigger: {
+            trigger: step,
+            start: 'top 82%',
+            toggleActions: 'play none none none'
+          },
+          x: index % 2 === 0 ? -30 : 30,
+          opacity: 0,
+          duration: 0.85,
+          ease: 'power3.out'
+        });
+      });
+
+      // ----------------------------------------------------
+      // E. TEAM CARDS SCROLLTRIGGER
+      // ----------------------------------------------------
+      gsap.from('.team-card', {
+        scrollTrigger: {
+          trigger: '#team',
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        },
+        y: 40,
+        opacity: 0,
+        duration: 0.85,
+        stagger: 0.16,
+        ease: 'power3.out'
+      });
+
+      // ----------------------------------------------------
+      // F. CONTACT FORM SUBMIT ANIMATION & STATE TRANSITION
+      // ----------------------------------------------------
+      const contactForm = document.getElementById('contact-form');
+      const submitBtn = document.getElementById('submit-btn');
+      const btnText = document.getElementById('btn-text');
+      const btnIcon = document.getElementById('btn-icon');
+      const successBanner = document.getElementById('form-success-banner');
+      const resetFormBtn = document.getElementById('reset-form-btn');
+
+      if (contactForm && submitBtn) {
+        contactForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          // Visual Button Morphing Sequence
+          submitBtn.disabled = true;
+
+          const btnTl = gsap.timeline();
+          
+          btnTl
+            .to(submitBtn, {
+              scale: 0.95,
+              duration: 0.15,
+              ease: 'power1.inOut'
+            })
+            .to(btnText, {
+              opacity: 0,
+              y: -10,
+              duration: 0.2,
+              onComplete: () => {
+                btnText.textContent = 'TRANSMITTING DATA...';
+              }
+            })
+            .to(btnText, {
+              opacity: 1,
+              y: 0,
+              duration: 0.2
+            })
+            .to(submitBtn, {
+              backgroundColor: '#d4ff32',
+              borderColor: '#d4ff32',
+              color: '#090a0d',
+              scale: 1,
+              duration: 0.3,
+              delay: 0.5
+            })
+            .to(btnText, {
+              opacity: 0,
+              duration: 0.15,
+              onComplete: () => {
+                btnText.textContent = 'MESSAGE SENT ✓';
+                btnIcon.textContent = '';
+              }
+            })
+            .to(btnText, {
+              opacity: 1,
+              duration: 0.2,
+              onComplete: () => {
+                // Display success overlay
+                successBanner.classList.remove('hidden');
+                gsap.fromTo(successBanner, 
+                  { opacity: 0, scale: 0.97 },
+                  { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' }
+                );
+              }
+            });
+        });
+
+        // Reset Button Handler
+        if (resetFormBtn) {
+          resetFormBtn.addEventListener('click', () => {
+            gsap.to(successBanner, {
+              opacity: 0,
+              duration: 0.3,
+              onComplete: () => {
+                successBanner.classList.add('hidden');
+                contactForm.reset();
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '';
+                submitBtn.style.borderColor = '';
+                submitBtn.style.color = '';
+                btnText.textContent = 'INITIATE DISPATCH →';
+                btnIcon.textContent = '✢';
+              }
+            });
+          });
+        }
+      }
+
+    });
+  </script>
+</body>
+</html>
